@@ -24,7 +24,10 @@ class CampanhasHomeCell extends Cell
      */
     public function display($type)
     {
-        $campanhas = '';
+        $this->loadModel('Campanhas');
+
+        $campanhas = [];
+        
         switch ($type) {
             case 'escolhidos':
                 $campanhas = $this->getEscolhidos();
@@ -37,34 +40,18 @@ class CampanhasHomeCell extends Cell
     }
     protected function getPopulares()
     {
-        $campanhas = [
-            [
-                'title' => 'Botafogo - Popular',
-                'text' => 'Eu apoio bla bla bla.',
-                'url' => ['controller' => 'Site', 'action' => 'campanha', 'mariana']
-            ],
-            [
-                'title' => 'França',
-                'text' => 'Eu apoio França bla bla bla.',
-                'url' => ['controller' => 'Site', 'action' => 'campanha', 'mariana']
-            ],
-        ];
+        $campanhas = $this->Campanhas->find('all', [
+            'contain' => ['Users', 'Categorias'],
+            'limit' => 3
+        ]);
         return $campanhas;
     }
     protected function getEscolhidos()
     {
-        $campanhas = [
-            [
-                'title' => 'Botafogo - O Campeão Voltou',
-                'text' => 'Eu apoio bla bla bla.',
-                'url' => ['controller' => 'Site', 'action' => 'campanha', 'mariana']
-            ],
-            [
-                'title' => 'Mariana',
-                'text' => 'Eu apoio Mariana bla bla bla.',
-                'url' => ['controller' => 'Site', 'action' => 'campanha', 'mariana']
-            ],
-        ];
+        $campanhas = $this->Campanhas->find('all', [
+            'contain' => ['Users', 'Categorias'],
+            'limit' => 3
+        ]);
         return $campanhas;
     }
 }

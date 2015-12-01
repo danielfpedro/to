@@ -7,4 +7,6 @@
 			<?= $this->cell('sidemenu') ?>
 		</div>
 	</div>
+	<?= $this->Paginator->prev() ?>
+	<?= $this->Paginator->next() ?>
 </div>

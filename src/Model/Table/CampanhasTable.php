@@ -36,9 +36,31 @@ class CampanhasTable extends Table
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('Categorias', [
-            'foreignKey' => 'user_id',
+            'foreignKey' => 'categoria_id',
             'joinType' => 'INNER'
         ]);
+
+        $this->addBehavior('Proffer.Proffer', [
+            'ribbon' => [    // The name of your upload field
+                'root' => WWW_ROOT . 'files', // Customise the root upload folder here, or omit to use the default
+                'dir' => 'ribbon_dir',   // The name of the field to store the folder
+                // 'thumbnailSizes' => [ // Declare your thumbnails
+                //     'square' => [   // Define the prefix of your thumbnail
+                //         'w' => 200, // Width
+                //         'h' => 200, // Height
+                //         'crop' => true,  // Crop will crop the image as well as resize it
+                //         'jpeg_quality'  => 100,
+                //         'png_compression_level' => 9
+                //     ],
+                //     'portrait' => [     // Define a second thumbnail
+                //         'w' => 100,
+                //         'h' => 300
+                //     ],
+                // ],
+                'thumbnailMethod' => 'imagick'  // Options are Imagick, Gd or Gmagick
+            ]
+        ]);
+
     }
 
     /**
@@ -66,6 +88,10 @@ class CampanhasTable extends Table
 
         $validator
             ->allowEmpty('photo_dir');
+
+        $validator
+            ->requirePresence('tags', 'create')
+            ->notEmpty('tags');
 
         return $validator;
     }

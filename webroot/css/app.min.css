@@ -1,12 +1,1 @@
-/*TOPO*/
-.topo-container-interno {
-  padding: 60px 0; }
-
-.topo-container {
-  background-color: #3498db; }
-
-.home-chamada-interno {
-  padding: 80px 0; }
-
-.home-chamada-container {
-  background-color: #3498db; }
+.img-container{width:133.33333px;height:133.33333px;background-color:#eee;background-size:cover;background-position:top center}.img-preview{width:133.33333px;height:133.33333px;background-position:center center;background-repeat:no-repeat}#negrip,#nwgrip,#segrip,#swgrip,#sgrip{background-color:green;width:10px;height:10px}#negrip{top:-5px;right:-5px}#nwgrip{bottom:-5px;left:-5px}#segrip{bottom:-5px;right:-5px}#swgrip{left:-5px;bottom:-5px}#sgrip{left:50%;bottom:-5px}.topo-container-interno{padding:60px 0}.topo-container{background-color:#3498db}.home-chamada-interno{padding:80px 0}.home-chamada-container{background-color:#3498db}

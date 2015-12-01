@@ -10,7 +10,10 @@ use App\Controller\AppController;
  */
 class CampanhasController extends AppController
 {
-
+    public function img()
+    {
+        
+    }
     /**
      * Index method
      *
@@ -19,7 +22,7 @@ class CampanhasController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Users']
+            'contain' => ['Users', 'Categorias']
         ];
         $this->set('campanhas', $this->paginate($this->Campanhas));
         $this->set('_serialize', ['campanhas', 'categorias']);

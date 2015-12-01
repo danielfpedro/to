@@ -10,9 +10,11 @@
 
     <?= $this->Html->css('../lib/bootstrap/dist/css/bootstrap.min') ?>
     <?= $this->Html->css('../lib/font-awesome/css/font-awesome.min') ?>
+    <?= $this->Html->css('../lib/jquery-ui/themes/vader/jquery-ui.min') ?>
     <?= $this->Html->css('app.min.css') ?>
 
     <?= $this->Html->script('../lib/jquery/dist/jquery.min') ?>
+    <?= $this->Html->script('../lib/jquery-ui/jquery-ui.min') ?>
     <?= $this->Html->script('../lib/bootstrap/dist/js/bootstrap.min') ?>
 
     <?= $this->fetch('meta') ?>

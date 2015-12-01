@@ -19,11 +19,14 @@ class UsersController extends AppController
     } 
     public function campanhas()
     {
-        $campanhas = $this->Users->Campanhas->find('all', [
+        $this->loadModel('Campanhas');
+        $this->paginate = [
             'conditions' => [
                 'user_id' => $this->Auth->user('id')
-            ]
-        ]);
+            ],
+            'contain' => ['Users', 'Categorias']
+        ];
+        $campanhas = $this->paginate($this->Campanhas);
 
         $this->set(compact('campanhas'));
     }

@@ -1,0 +1,56 @@
+$img-container-width: (400px / 3);
+$img-container-height: $img-container-width;
+
+$img-inside-width: $img-container-width - 10;
+$img-inside-height: $img-inside-width;
+
+$img-preview: $img-container-width;
+$img-preview: $img-preview;
+
+.img-container{
+    width: $img-container-width;
+    height: $img-container-height;
+    background-color: #eee;
+    /*-webkit-background-size: cover;*/
+    background-size: cover;
+    background-position: top center;
+}
+.img-inside{
+    /*width: $img-inside-width;*/
+    /*height: $img-inside-height;*/
+    /*background-color: green;*/
+}
+.img-preview{
+    width: $img-preview;
+    height: $img-preview;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+.ui-resizable-handle{
+
+}
+#negrip, #nwgrip, #segrip, #swgrip, #sgrip{
+    background-color: green;
+    width: 10px;
+    height: 10px;
+}
+#negrip{
+    top: -5px;
+    right: -5px;
+}
+#nwgrip{
+    bottom: -5px;
+    left: -5px;
+}
+#segrip{
+    bottom: -5px;
+    right:-5px;
+}
+#swgrip{
+    left:-5px;
+    bottom: -5px;
+}
+#sgrip{
+    left: 50%;
+    bottom: -5px;
+}

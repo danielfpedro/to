@@ -5,7 +5,21 @@
 			<div class="col-md-4">
 				<?= $this->Html->image('navbar_logo.jpg', ['url' => ['controller' => 'Site', 'action' => 'home']]) ?>
 			</div>
-			<div class="col-md-8 text-right">
+			<div class="col-md-2 text-right">
+				<?= $this->Form->create(null, ['type' => 'get', 'url' => ['controller' => 'Site', 'action' => 'busca']]) ?>
+					<?= $this->Form->input('q', ['label' => false]) ?>
+				<?= $this->Form->end() ?>
+			</div>
+			<div class="col-md-4 text-right">
+				<?= $this->Html->link('Criar campanha', [
+						'controller' => 'Campanhas',
+						'action' => 'add'
+					], [
+						'class' => 'btn btn-primary btn-sm'
+					]
+				) ?>
+			</div>
+			<div class="col-md-2 text-right">
 				<?php if ($authUser): ?>
 					<div class="dropdown">
 						<button
@@ -34,8 +48,6 @@
 							</li>
 						</ul>
 					</div>
-				<?php else: ?>
-					<?= $this->Html->link('Criar campanha', ['controller' => 'Campanhas', 'action' => 'add'], ['class' => 'btn btn-primary btn-sm']) ?>
 				<?php endif ?>
 			</div>
 		</div>

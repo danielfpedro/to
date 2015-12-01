@@ -34,12 +34,35 @@ class SiteController extends AppController
             throw new NotFoundException();
         }
 
-        $campanhas = $this->Campanhas->find('all', [
+        $this->paginate = [
             'conditions' => [
-                'categoria_id' => $categoria->id
+                'Campanhas.categoria_id' => $categoria->id
             ],
-            'contain' => ['Users']
-        ]);
+            'contain' => ['Users', 'Categorias']
+        ];
+
+        $campanhas = $this->paginate($this->Campanhas);
+
+        $this->set(compact('campanhas'));   
+    }
+    public function busca()
+    {
+        $q = $this->request->query('q');
+        if (!$q) {
+            throw new NotFoundException();
+        }
+        $this->loadModel('Campanhas');
+
+        $qQuery = str_replace(' ', '%', $q);
+
+        $this->paginate = [
+            'conditions' => [
+                'tags LIKE' => '%' . $qQuery . '%'
+            ],
+            'contain' => ['Users', 'Categorias'],
+        ];
+
+        $campanhas = $this->paginate($this->Campanhas);
 
         $this->set(compact('campanhas'));   
     }
