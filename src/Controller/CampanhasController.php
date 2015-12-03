@@ -51,6 +51,8 @@ class CampanhasController extends AppController
      */
     public function add()
     {
+        $this->viewBuilder()->template('form');
+
         $campanha = $this->Campanhas->newEntity();
         if ($this->request->is('post')) {
             $campanha = $this->Campanhas->patchEntity($campanha, $this->request->data);
@@ -75,6 +77,8 @@ class CampanhasController extends AppController
      */
     public function edit($id = null)
     {
+        $this->viewBuilder()->template('form');
+
         $campanha = $this->Campanhas->get($id, [
             'contain' => []
         ]);

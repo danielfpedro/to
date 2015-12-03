@@ -1,5 +1,17 @@
 <script>
     $(function(){
+        var webroot = $('#webroot').val();
+
+        $('#slider-opacity').slider({
+            min: 0.1,
+            max: 1,
+            step: 0.1,
+            change: function(event, ui){
+                console.log(ui.value);
+                $('#ribbon-opacity').val(ui.value);
+                $('.img-inside').css('opacity', ui.value);
+            }
+        });
 
         function readURL(input) {
 
@@ -51,17 +63,38 @@
         function validateSize(width, height){
             var message = '';
             var max = 400;
-            if (width > max) {
-                message = 'A largura da imagem não pode ser maior que '+max+' ('+width+'px informado)';
-            }
-            if (height > max) {
-                message = 'A altura da imagem não pode ser maior que '+max+' ('+height+'px informado)';
-            }
-            if (message) {
-                alert(message);
-                return false;
-            }
+            // if (width > max) {
+            //     message = 'A largura da imagem não pode ser maior que '+max+' ('+width+'px informado)';
+            // }
+            // if (height > max) {
+            //     message = 'A altura da imagem não pode ser maior que '+max+' ('+height+'px informado)';
+            // }
+            // if (message) {
+            //     alert(message);
+            //     return false;
+            // }
             return true;
+        }
+        /**
+         * Somente para edição
+         */
+        var ribbonImgPath = $('#ribbon-img-path').val();
+        console.log(ribbonImgPath);
+        if (ribbonImgPath) {
+            $('.img-preview').css('background-image', 'url('+webroot + ribbonImgPath+')');
+            $('.img-inside').css('background-image', 'url('+webroot + ribbonImgPath+')');
+            $('.img-inside').css('background-size', '100%');
+
+            var image = new Image();
+            image.src = ribbonImgPath;
+
+            image.onload = function(){
+                var h = this.height;
+                var w = this.width;
+
+                console.log('tey');
+                console.log(h);
+            };
         }
 
         $("#load-img").click(function(){
@@ -123,6 +156,11 @@
         }, function(){
             $('.ui-resizable-handle').fadeToggle();
         });
+
+        $('#opacity-placeholder').change(function(){
+            var value = $(this).val();
+
+        });
     });
 </script>
 <div class="container">
@@ -141,7 +179,6 @@
                 <div class="col-md-3">
                     <div class="img-container" style="background-image: url(http://graph.facebook.com/<?= $authUser['facebook_id'] ?>/picture?type=square&width=140&height=140); bakground-size: cover;">
 
-                        <?php $imgInside = $this->request->webroot . 'img/ribbon_test.png' ?>
                         <div class="img-inside">
                             <div id="swgrip" class="ui-resizable-handle ui-resizable-sw"></div>
                             <div id="segrip" class="ui-resizable-handle ui-resizable-se"></div>
@@ -149,12 +186,15 @@
                             <div id="negrip" class="ui-resizable-handle ui-resizable-ne"></div>
                         </div>
                     </div>
+                    <div id="slider-opacity"></div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <?= $this->Form->create($campanha, ['horizontal' => true, 'type' => 'file']) ?>
                         <?php
+                            echo $this->Form->input('webroot', ['value' => $this->request->webroot]);
+                            echo $this->Form->input('ribbon_img_path');
                             echo $this->Form->input('title');
                             echo $this->Form->input('text');
                             echo $this->Form->input('tags');
@@ -165,6 +205,7 @@
                             echo $this->Form->input('ribbon_position_top');
                             echo $this->Form->input('ribbon_width');
                             echo $this->Form->input('ribbon_height');
+                            echo $this->Form->input('ribbon_opacity');
 
                         ?>
                         <?= $this->Form->button(__('Enviar')) ?>

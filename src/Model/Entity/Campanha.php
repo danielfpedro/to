@@ -49,4 +49,7 @@ class Campanha extends Entity
     {
         return ['controller' => 'Site', 'action' => 'campanha', $this->_properties['slug']];
     }
+    protected function _getRibbonImgPath(){
+        return 'files/campanhas/ribbon/' . $this->_properties['ribbon_dir'] . '/' . $this->_properties['ribbon'];
+    }
 }

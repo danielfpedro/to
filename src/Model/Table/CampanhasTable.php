@@ -6,6 +6,10 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\Event\Event;
+use Cake\ORM\Entity;
+
+use WideImage\WideImage;
 
 /**
  * Campanhas Model
@@ -63,6 +67,23 @@ class CampanhasTable extends Table
 
     }
 
+    function afterSave(Event $event, Entity $entity)
+    {
+        $dirPath = 'files/campanhas/ribbon/' . $entity->ribbon_dir;
+        $imagePath = $dirPath . '/' . $entity->ribbon;
+
+        $image = WideImage::load($imagePath );
+
+        // $height = $image->getHeight();
+        // $width = $image->getWidth();
+
+        $newWidth = 400;
+        $newHeight = 400;
+
+        $image->resize($newWidth, $newHeight)->saveToFile($dirPath . '/ribbon.jpg');
+        exit();
+    }
+
     /**
      * Default validation rules.
      *
@@ -71,6 +92,8 @@ class CampanhasTable extends Table
      */
     public function validationDefault(Validator $validator)
     {
+        $validator->provider('proffer', 'Proffer\Model\Validation\ProfferRules');
+
         $validator
             ->add('id', 'valid', ['rule' => 'numeric'])
             ->allowEmpty('id', 'create');
@@ -92,6 +115,15 @@ class CampanhasTable extends Table
         $validator
             ->requirePresence('tags', 'create')
             ->notEmpty('tags');
+
+        $validator->add('ribbon', 'proffer', [
+            'rule' => ['dimensions', [
+                'min' => ['w' => 80, 'h' => 80],
+                'max' => ['w' => 1200, 'h' => 1200]
+            ]],
+            'message' => 'Image is not correct dimensions.',
+            'provider' => 'proffer'
+        ]);
 
         return $validator;
     }
