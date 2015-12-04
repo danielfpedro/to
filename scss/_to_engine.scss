@@ -19,11 +19,11 @@ $img-preview: $img-preview;
     /*width: $img-inside-width;*/
     /*height: $img-inside-height;*/
     /*background-color: green;*/
+    background-repeat: no-repeat;
 }
 .img-preview{
     width: $img-preview;
     height: $img-preview;
-    background-position: center center;
     background-repeat: no-repeat;
 }
 .ui-resizable-handle{
@@ -53,4 +53,12 @@ $img-preview: $img-preview;
 #sgrip{
     left: 50%;
     bottom: -5px;
+}
+#ngrip{
+    left: 50%;
+    bottom: 5px;
+}
+#egrip{
+    right: -5px;
+    top: 50%;
 }

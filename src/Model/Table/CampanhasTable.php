@@ -67,23 +67,63 @@ class CampanhasTable extends Table
 
     }
 
-    function afterSave(Event $event, Entity $entity)
+    function beforeSave(Event $event, Entity $entity)
     {
         $dirPath = 'files/campanhas/ribbon/' . $entity->ribbon_dir;
         $imagePath = $dirPath . '/' . $entity->ribbon;
 
-        $image = WideImage::load($imagePath );
+        $image = WideImage::load($imagePath);
 
-        // $height = $image->getHeight();
-        // $width = $image->getWidth();
+        $height = $image->getHeight();
+        $width = $image->getWidth();
 
         $newWidth = 400;
         $newHeight = 400;
 
-        $image->resize($newWidth, $newHeight)->saveToFile($dirPath . '/ribbon.jpg');
-        exit();
-    }
+        $greater = $height;
+        if ($width > $height) {
+            $geater = $height;
+        }
+        $newImagePath = $dirPath . '/ribbon.jpg';
+        if ($greater > 400) {
+            $image->resize($newWidth, $newHeight)->saveToFile($newImagePath);
+        } else {
+            $image->saveToFile($newImagePath);
+        }
+        
+        $newImage = WideImage::load($newImagePath);
 
+        // $size = $this->_calNewDimensions([$width, $height]);
+
+        $entity->ribbon_image_width = $newImage->getWidth();
+        $entity->ribbon_image_height = $newImage->getHeight();
+
+        /**
+         * Cria a imagem fundida
+         */
+        $facebookImagePath = 'http://graph.facebook.com/'.$entity->facebook_id_placeholder.'/picture?type=square&width=400&height=400';
+        $facebookImage = WideImage::load($facebookImagePath);
+        
+        $new = $facebookImage->resize('400', '400')->crop('top', 'center', 400, 400)->merge($newImage, 0, 0, ($entity->opacity * 100));
+        $new->saveToFile($dirPath . '/final.png');
+    }
+    protected function _calcNewDimensions($size)
+    {
+        $max = 400;
+        if ($size['w'] > $size.['h']) {
+            $size['newW'] = $max;
+            $size['newH'] = $this->_calcProporcao($size['w'], $max, $size['h']);
+        } else {
+            $size['newH'] = $max;
+            $size['newW'] = $this->_calcProporcao($size['h'], $max, $size['w']);
+        }
+        return $size;
+    }
+    protected function calcProporcao($maior, $novoValor, $menor){
+        $percent = ($novoValor*100) / $maior;
+        $novoMenor = ($menor*$percent) / 100;
+        return $novoMenor;
+    }
     /**
      * Default validation rules.
      *
@@ -107,7 +147,8 @@ class CampanhasTable extends Table
             ->notEmpty('text');
 
         $validator
-            ->allowEmpty('photo');
+            ->requirePresence('ribbon', 'create')
+            ->allowEmpty('ribbon');
 
         $validator
             ->allowEmpty('photo_dir');
@@ -115,15 +156,18 @@ class CampanhasTable extends Table
         $validator
             ->requirePresence('tags', 'create')
             ->notEmpty('tags');
-
-        $validator->add('ribbon', 'proffer', [
-            'rule' => ['dimensions', [
-                'min' => ['w' => 80, 'h' => 80],
-                'max' => ['w' => 1200, 'h' => 1200]
-            ]],
-            'message' => 'Image is not correct dimensions.',
-            'provider' => 'proffer'
-        ]);
+        /**
+         * Por enquanto não restringir resolução maxima, apenas tamanh do arquivo
+         * já basta, afinal a imagem será redimensionada
+         */
+        // $validator->add('ribbon', 'proffer', [
+        //     'rule' => ['dimensions', [
+        //         'min' => ['w' => 80, 'h' => 80],
+        //         'max' => ['w' => 1200, 'h' => 1200]
+        //     ]],
+        //     'message' => 'Image is not correct dimensions.',
+        //     'provider' => 'proffer'
+        // ]);
 
         return $validator;
     }
