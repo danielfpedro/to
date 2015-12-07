@@ -2,25 +2,26 @@
     $(function(){
         var webroot = $('#webroot').val();
 
-        $('.img-inside').resizable({
-            containment: "parent",
-            aspectRatio: true,
-            handles: {
-                'sw': '#swgrip',
-                'se': '#segrip',
-                'nw': '#nwgrip',
-                'ne': '#negrip'
-            },
-            minHeight: 20,
-            minWidth: 20,
-            maxWidth: ($('#ribbon-image-width').val() / 3),
-            maxHeight: ($('#ribbon-image-height').val() / 3),
-            stop: function(event, ui){
-                console.log(ui);
-                $('#ribbon-width').val(ui.size.width * 3);
-                $('#ribbon-height').val(ui.size.height * 3);
-            }
-        });
+        // $('.img-inside').resizable({
+        //     containment: "parent",
+        //     aspectRatio: true,
+        //     handles: {
+        //         'sw': '#swgrip',
+        //         'se': '#segrip',
+        //         'nw': '#nwgrip',
+        //         'ne': '#negrip'
+        //     },
+        //     grid: [1, 1],
+        //     minHeight: 20,
+        //     minWidth: 20,
+        //     maxWidth: ($('#ribbon-image-width').val() / 3),
+        //     maxHeight: ($('#ribbon-image-height').val() / 3),
+        //     stop: function(event, ui){
+        //         console.log(ui);
+        //         $('#ribbon-width').val(ui.size.width * 3);
+        //         $('#ribbon-height').val(ui.size.height * 3);
+        //     }
+        // });
 
         console.log('maxWidth is: ' + ($('#ribbon-image-width').val() / 3) + 'px');
 
@@ -29,13 +30,38 @@
             max: 1,
             step: 0.1,
             value: $('#ribbon-opacity').val(),
-            change: function(event, ui){
+            slide: function(event, ui){
                 console.log(ui.value);
                 $('#ribbon-opacity').val(ui.value);
                 $('.img-inside').css('opacity', ui.value);
             }
         });
 
+        var width = $('#ribbon-width').val();
+        var height = $('#ribbon-height').val();
+        var maiorLado = (width >= height) ? 'width' : 'height';
+
+        $('#slider-width').slider({
+            min: 20,
+            max: 133,
+            step: 1,
+            value: ($('#ribbon-' + maiorLado).val() / 3),
+            slide: function(event, ui){
+                
+                $('.img-inside').css({top: 0, left: 0});
+
+                resizeAndKeepAspectRatio(ui.value, maiorLado);
+                $('#ribbon-width').val($('.img-inside').width() * 3);
+                $('#ribbon-height').val($('.img-inside').height() * 3);
+            }
+        });
+        function resizeAndKeepAspectRatio(newValue, side){
+            var otherSide = (side == 'width') ? 'height' : 'width';
+            var fraction = (newValue * 100) / ($('#ribbon-image-' + side).val() / 3);
+            var newOtherSideValue = (($('#ribbon-image-' + otherSide).val() / 3) * fraction) / 100;
+            $(".img-inside").css(side, newValue + 'px');
+            $(".img-inside").css(otherSide, newOtherSideValue + 'px');
+        }
         function readURL(input) {
 
             if (input.files && input.files[0]) {
@@ -50,38 +76,14 @@
                         var h = this.height;
                         var w = this.width;
 
-
-                        if (w > h) {
-                            greater = w;
-                        } else {
-                            greater = h;
-                        }
-
-                        var size = {newW: w, newH: h};
-
-                        if (greater > 400) {
-                            size = resizeImg({w: w, h: h});
-                        }
+                        var size = resizeImg({w: w, h: h});
+                        maiorLado = (size.newW >= size.newH) ? 'width' : 'height';
                         
                         setInsideImg(e.target.result, size.newW, size.newH, 0, 0, true);
 
-                        // $('#ribbon-image-width').val(size.newW);
-                        // $('#ribbon-image-height').val(size.newH);
-
                         $('#ribbon-width').val(size.newW);
                         $('#ribbon-height').val(size.newH);
-
-                        // var greater = w;
-                        // if (h > w) {
-                        //     greater = h;
-                        // }
-                        // $('.img-inside').css({width: (w/3), height: (h/3)});
-                        // if (greater > (400/3)) {
-                        //     $('.img-preview').css('background-size', 'cover');
-                        // } else {
-                        //     $('.img-preview').css('background-size', 'auto');
-                        //     $('.img-inside').css({width: w, height: h});        
-                        // }
+                        $('#slider-width').slider('option', 'value', ($('#ribbon-' + maiorLado).val() / 3));
                     };
                 };
 
@@ -92,34 +94,28 @@
             setInsideImg(webroot + '/' + $('#ribbon-img-path').val(), ($('#ribbon-width').val()), ($('#ribbon-height').val()), $('#ribbon-top').val(), $('#ribbon-left').val(), true);            
         }
         function setInsideImg(imgPath, w, h, top, left, flag){
-            console.log(top);
-            console.log(left);
 
-            $('.img-preview').css('background-image', 'url('+imgPath+')');
-            if (w > h) {
-                $('.img-inside').css('background-size', '100% auto');
-                $('.img-preview').css('background-size', '100% auto');
+            $('.img-inside').attr('src', imgPath);
+            // if (w > h) {
+            //     $('.img-inside').css('background-size', '100% auto');
+            //     $('.img-preview').css('background-size', '100% auto');
 
-                $('#ajustar-largura').show();
-                $('#ajustar-altura').hide();
-            } else {
-                $('.img-inside').css('background-size', 'auto 100%');
-                $('.img-preview').css('background-size', 'auto 100%');
+            //     $('#ajustar-largura').show();
+            //     $('#ajustar-altura').hide();
+            // } else {
+            //     $('.img-inside').css('background-size', 'auto 100%');
+            //     $('.img-preview').css('background-size', 'auto 100%');
 
-                $('#ajustar-largura').hide();
-                $('#ajustar-altura').show();
-            }
-            $('.img-inside').css('background-image', 'url('+imgPath+')');
+            //     $('#ajustar-largura').hide();
+            //     $('#ajustar-altura').show();
+            // }
+            // $('.img-inside').css('background-image', 'url('+imgPath+')');
             
             $('.img-inside').css({top: top + 'px', left: left + 'px'});
             if (flag) {
                 $('.img-inside').css({width: (w / 3) + 'px', height: (h / 3) + 'px'});
-                // $('.img-inside').resizable('option', 'maxWidth', (w / 3));
-                // $('.img-inside').resizable('option', 'maxHeight', (h / 3));
             } else {
                 $('.img-inside').css({width: w + 'px', height: h + 'px'});    
-                // $('.img-inside').resizable('option', 'maxWidth', w);
-                // $('.img-inside').resizable('option', 'maxHeight', h);
             }
 
             
@@ -204,7 +200,8 @@
             $('#img-top').val(offset.top - 8);
             $('#img-left').val(offset.left - 8);
         });
-        $('.ui-resizable-handle').hide();
+        
+        //$('.ui-resizable-handle').hide();
 
         var insideImgOffset = {
             top: $('#offset-top').val() + 'px',
@@ -213,11 +210,11 @@
         
         $('.img-inside').css(insideImgOffset);
 
-        $('.img-container').hover(function(){
-            $('.ui-resizable-handle').fadeToggle();
-        }, function(){
-            $('.ui-resizable-handle').fadeToggle();
-        });
+        // $('.img-container').hover(function(){
+        //     $('.ui-resizable-handle').fadeToggle();
+        // }, function(){
+        //     $('.ui-resizable-handle').fadeToggle();
+        // });
 
         $('#opacity-placeholder').change(function(){
             var value = $(this).val();
@@ -252,18 +249,24 @@
                 <div class="col-md-3">
                     <div class="img-container" style="background-image: url(http://graph.facebook.com/<?= $authUser['facebook_id'] ?>/picture?type=square&width=140&height=140); bakground-size: cover;">
 
-                        <div class="img-inside">
+<!--                         <div class="img-inside">
                             <div id="swgrip" class="ui-resizable-handle ui-resizable-sw"></div>
                             <div id="segrip" class="ui-resizable-handle ui-resizable-se"></div>
                             <div id="nwgrip" class="ui-resizable-handle ui-resizable-nw"></div>
                             <div id="ngrip" class="ui-resizable-handle ui-resizable-n"></div>
                             <div id="negrip" class="ui-resizable-handle ui-resizable-ne"></div>
-                        </div>
+                        </div> -->
+                        <img src="" class="img-inside" alt="">
                     </div>
                     
                 </div>
                 <div class="col-md-3">
+                    opacity
                     <div id="slider-opacity"></div>
+                    width
+                    <div id="slider-width"></div>
+                    height
+                    <div id="slider-height"></div>
                     <div>
                         <button type="button" id="ajustar-largura">Ajustar Largura</button>
                         <button type="button" id="ajustar-altura">Ajustar Altura</button>
