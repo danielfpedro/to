@@ -1,29 +1,8 @@
 <script>
     $(function(){
         var webroot = $('#webroot').val();
-
-        // $('.img-inside').resizable({
-        //     containment: "parent",
-        //     aspectRatio: true,
-        //     handles: {
-        //         'sw': '#swgrip',
-        //         'se': '#segrip',
-        //         'nw': '#nwgrip',
-        //         'ne': '#negrip'
-        //     },
-        //     grid: [1, 1],
-        //     minHeight: 20,
-        //     minWidth: 20,
-        //     maxWidth: ($('#ribbon-image-width').val() / 3),
-        //     maxHeight: ($('#ribbon-image-height').val() / 3),
-        //     stop: function(event, ui){
-        //         console.log(ui);
-        //         $('#ribbon-width').val(ui.size.width * 3);
-        //         $('#ribbon-height').val(ui.size.height * 3);
-        //     }
-        // });
-
-        console.log('maxWidth is: ' + ($('#ribbon-image-width').val() / 3) + 'px');
+        var maiorLado;
+        var max = 396;
 
         $('#slider-opacity').slider({
             min: 0.1,
@@ -37,20 +16,18 @@
             }
         });
 
-        var width = $('#ribbon-width').val();
-        var height = $('#ribbon-height').val();
-        var maiorLado = (width >= height) ? 'width' : 'height';
+        //var maiorLado = (width >= height) ? 'width' : 'height';
 
         $('#slider-width').slider({
-            min: 20,
-            max: 133,
+            min: 40,
+            max: (max / 3),
             step: 1,
             value: ($('#ribbon-' + maiorLado).val() / 3),
             slide: function(event, ui){
                 
                 $('.img-inside').css({top: 0, left: 0});
 
-                resizeAndKeepAspectRatio(ui.value, maiorLado);
+                resizeAndKeepAspectRatio(ui.value, maiorLado.label);
                 $('#ribbon-width').val($('.img-inside').width() * 3);
                 $('#ribbon-height').val($('.img-inside').height() * 3);
             }
@@ -75,15 +52,42 @@
                     image.onload = function(){
                         var h = this.height;
                         var w = this.width;
-
-                        var size = resizeImg({w: w, h: h});
-                        maiorLado = (size.newW >= size.newH) ? 'width' : 'height';
                         
-                        setInsideImg(e.target.result, size.newW, size.newH, 0, 0, true);
+                        var newH;
+                        var newW;
 
-                        $('#ribbon-width').val(size.newW);
-                        $('#ribbon-height').val(size.newH);
-                        $('#slider-width').slider('option', 'value', ($('#ribbon-' + maiorLado).val() / 3));
+                        if (w >= h) {
+                            maiorLado = {label: 'width', value: w};
+                        } else {
+                            maiorLado = {label: 'height', value: h};
+                        }
+
+                        if (maiorLado.value > max) {
+                            if (maiorLado.label == 'width') {
+                                newW = max;
+                                newH = calcProporcao(w, max, h);
+                            } else {
+                                newW = calcProporcao(h, max, w);
+                                newH = max;
+                            }
+                            maiorLado.value = max;
+                        } else {
+                            newW = w;
+                            newH = h;
+                        }
+
+                        $('.img-inside').attr('src', e.target.result);
+                        $('.img-inside').css({top: 0 + 'px', left: 0 + 'px'});
+                        $('.img-inside').css({width: (newW / 3) + 'px', height: (newH / 3) + 'px'});
+
+                        $('#ribbon-width').val(newW);
+                        $('#ribbon-height').val(newH);
+
+                        $('#ribbon-image-width').val(newW);
+                        $('#ribbon-image-height').val(newH);
+
+                        $('#slider-width').slider('option', 'value', maiorLado.value / 3);
+                        $('#slider-width').slider('option', 'max', maiorLado.value / 3);
                     };
                 };
 
@@ -94,8 +98,7 @@
             setInsideImg(webroot + '/' + $('#ribbon-img-path').val(), ($('#ribbon-width').val()), ($('#ribbon-height').val()), $('#ribbon-top').val(), $('#ribbon-left').val(), true);            
         }
         function setInsideImg(imgPath, w, h, top, left, flag){
-
-            $('.img-inside').attr('src', imgPath);
+            // $('.img-inside').attr('src', imgPath);
             // if (w > h) {
             //     $('.img-inside').css('background-size', '100% auto');
             //     $('.img-preview').css('background-size', '100% auto');
@@ -111,14 +114,12 @@
             // }
             // $('.img-inside').css('background-image', 'url('+imgPath+')');
             
-            $('.img-inside').css({top: top + 'px', left: left + 'px'});
-            if (flag) {
-                $('.img-inside').css({width: (w / 3) + 'px', height: (h / 3) + 'px'});
-            } else {
-                $('.img-inside').css({width: w + 'px', height: h + 'px'});    
-            }
-
-            
+            // $('.img-inside').css({top: top + 'px', left: left + 'px'});
+            // if (flag) {
+            //     $('.img-inside').css({width: (w / 3) + 'px', height: (h / 3) + 'px'});
+            // } else {
+            //     $('.img-inside').css({width: w + 'px', height: h + 'px'});    
+            // }            
         }
         function resizeImg(size){
             max = 400;
@@ -155,22 +156,33 @@
          * Somente para edição
          */
         var ribbonImgPath = $('#ribbon-img-path').val();
-        console.log(ribbonImgPath);
         if (ribbonImgPath) {
-            // $('.img-preview').css('background-image', 'url('+webroot + ribbonImgPath+')');
-            // $('.img-inside').css('background-image', 'url('+webroot + ribbonImgPath+')');
-            // $('.img-inside').css('background-size', '100%');
+            var imageWidth = parseInt($('#ribbon-image-width').val());
+            var imageHeight = parseInt($('#ribbon-image-height').val());
 
-            // var image = new Image();
-            // image.src = ribbonImgPath;
+            var width = parseInt($('#ribbon-width').val());
+            var height = parseInt($('#ribbon-height').val());
 
-            // image.onload = function(){
-            //     var h = this.height;
-            //     var w = this.width;
+            var top = parseInt($('#ribbon-top').val());
+            var left = parseInt($('#ribbon-left').val());
 
-            //     console.log('tey');
-            //     console.log(h);
-            // };
+            var opacity = $('#ribbon-opacity').val();
+
+            $('.img-inside').attr('src', webroot + ribbonImgPath);
+            $('.img-inside').css({top: top + 'px', left: left + 'px'});
+            $('.img-inside').css({opacity: opacity});
+            $('.img-inside').css({width: (width / 3) + 'px', height: (height / 3) + 'px'});
+
+            if (width >= height) {
+                maiorLado = {label: 'width', value: width};
+                maxSlider = imageWidth;
+            } else {
+                maiorLado = {label: 'height', value: height};
+                maxSlider = imageHeight;
+            }
+
+            $('#slider-width').slider('option', 'value', maiorLado.value / 3);
+            $('#slider-width').slider('option', 'max', maxSlider / 3);
         }
 
         $("#load-img").click(function(){
@@ -238,7 +250,7 @@
         <div class="col-md-8">
             <div class="row">
                 <div class="col-md-3">
-                    <div style="background-image: url(http://graph.facebook.com/<?= $authUser['facebook_id'] ?>/picture?type=square&width=140&height=140);background-size: cover; background-position: top center; width: 140px; height: 140px;">
+                    <div style="background-image: url(http://graph.facebook.com/<?= $authUser['facebook_id'] ?>/picture?type=square&width=140&height=140);background-size: cover; background-position: top center; width: 132px; height: 132px;">
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -247,7 +259,7 @@
                     <button class="btn btn-primary btn-xs" id="load-img">Enviar</button>
                 </div>
                 <div class="col-md-3">
-                    <div class="img-container" style="background-image: url(http://graph.facebook.com/<?= $authUser['facebook_id'] ?>/picture?type=square&width=140&height=140); bakground-size: cover;">
+                    <div class="img-container" style="background-image: url(http://graph.facebook.com/<?= $authUser['facebook_id'] ?>/picture?type=square&width=140&height=140); bakground-size: cover; width: 132px; height: 132px;">
 
 <!--                         <div class="img-inside">
                             <div id="swgrip" class="ui-resizable-handle ui-resizable-sw"></div>
@@ -277,6 +289,12 @@
                 <div class="col-md-12">
                     <?= $this->Form->create($campanha, ['horizontal' => true, 'type' => 'file']) ?>
                         <?php
+                            echo $this->Form->input('ribbon_width');
+                            echo $this->Form->input('ribbon_height');
+
+                            echo $this->Form->input('ribbon_image_width');
+                            echo $this->Form->input('ribbon_image_height');
+
                             echo $this->Form->input('webroot', ['value' => $this->request->webroot]);
                             echo $this->Form->input('facebook_id_placeholder', ['value' => $authUser['facebook_id']]);
                             echo $this->Form->input('ribbon_img_path');
@@ -288,10 +306,6 @@
                             echo $this->Form->input('ribbon', ['type' => 'file']);
                             echo $this->Form->input('ribbon_top');
                             echo $this->Form->input('ribbon_left');
-                            echo $this->Form->input('ribbon_width');
-                            echo $this->Form->input('ribbon_height');
-                            echo $this->Form->input('ribbon_image_width');
-                            echo $this->Form->input('ribbon_image_height');
                             echo $this->Form->input('ribbon_opacity');
 
                         ?>

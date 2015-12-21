@@ -77,15 +77,15 @@ class CampanhasTable extends Table
         $height = $image->getHeight();
         $width = $image->getWidth();
 
-        $newWidth = 400;
-        $newHeight = 400;
+        $newWidth = 396;
+        $newHeight = 396;
 
         $greater = $height;
         if ($width > $height) {
             $geater = $height;
         }
         $newImagePath = $dirPath . '/ribbon.jpg';
-        if ($greater > 400) {
+        if ($greater > 396) {
             $image->resize($newWidth, $newHeight)->saveToFile($newImagePath);
         } else {
             $image->saveToFile($newImagePath);
@@ -95,8 +95,8 @@ class CampanhasTable extends Table
 
         // $size = $this->_calNewDimensions([$width, $height]);
 
-        $entity->ribbon_image_width = $newImage->getWidth();
-        $entity->ribbon_image_height = $newImage->getHeight();
+        // $entity->ribbon_image_width = $newImage->getWidth();
+        // $entity->ribbon_image_height = $newImage->getHeight();
 
         /**
          * Cria a imagem fundida
