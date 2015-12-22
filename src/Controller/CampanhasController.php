@@ -86,14 +86,13 @@ class CampanhasController extends AppController
             $campanha = $this->Campanhas->patchEntity($campanha, $this->request->data);
             if ($this->Campanhas->save($campanha)) {
                 $this->Flash->success(__('The campanha has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                //return $this->redirect(['action' => 'index']);
             } else {
                 $this->Flash->error(__('The campanha could not be saved. Please, try again.'));
             }
         }
         $users = $this->Campanhas->Users->find('list', ['limit' => 200]);
         $this->set(compact('campanha', 'users'));
-        $this->set('_serialize', ['campanha']);
     }
 
     /**

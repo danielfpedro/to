@@ -18,6 +18,7 @@ use WideImage\WideImage;
  */
 class CampanhasTable extends Table
 {
+    public $max = 396;
 
     /**
      * Initialize method
@@ -72,58 +73,61 @@ class CampanhasTable extends Table
         $dirPath = 'files/campanhas/ribbon/' . $entity->ribbon_dir;
         $imagePath = $dirPath . '/' . $entity->ribbon;
 
+        $ext = image_type_to_extension(getimagesize($imagePath)[2]);
+
         $image = WideImage::load($imagePath);
 
         $height = $image->getHeight();
         $width = $image->getWidth();
 
-        $newWidth = 396;
-        $newHeight = 396;
-
         $greater = $height;
-        if ($width > $height) {
+
+        if ($width >= $height) {
             $geater = $height;
         }
-        $newImagePath = $dirPath . '/ribbon.jpg';
-        if ($greater > 396) {
-            $image->resize($newWidth, $newHeight)->saveToFile($newImagePath);
+
+        $ribbonImageName = md5($entity->ribbon) . $ext;
+        $entity->ribbon_image_name = $ribbonImageName;
+
+        $newImagePath = $dirPath . '/' . $ribbonImageName;
+
+        if ($greater > $this->max) {
+            $image->resize($this->max, $this->max)->saveToFile($newImagePath);
         } else {
             $image->saveToFile($newImagePath);
         }
         
-        $newImage = WideImage::load($newImagePath);
+        // $newImage = WideImage::load($newImagePath);
+        // $newImage = $newImage->resize($entity->ribbon_width, $entity->ribbon_height);
 
-        // $size = $this->_calNewDimensions([$width, $height]);
-
-        // $entity->ribbon_image_width = $newImage->getWidth();
-        // $entity->ribbon_image_height = $newImage->getHeight();
-
-        /**
-         * Cria a imagem fundida
-         */
-        $facebookImagePath = 'http://graph.facebook.com/'.$entity->facebook_id_placeholder.'/picture?type=square&width=400&height=400';
-        $facebookImage = WideImage::load($facebookImagePath);
+        // $facebookImagePath = 'http://graph.facebook.com/'.$entity->facebook_id_placeholder.'/picture?type=square&width=400&height=400';
+        // $facebookImage = WideImage::load($facebookImagePath);
+        // $facebookImage = $facebookImage
+        //     ->resize($this->max, $this->max)
+        //     ->crop('top', 'center', $this->max, $this->max);
         
-        $new = $facebookImage->resize('400', '400')->crop('top', 'center', 400, 400)->merge($newImage, 0, 0, ($entity->opacity * 100));
-        $new->saveToFile($dirPath . '/final.png');
+        // $new = $facebookImage
+        //     ->merge($newImage, 'left + ' . $entity->ribbon_left, 'top + ' . $entity->ribbon_top, ($entity->ribbon_opacity * 100));
+
+        // $new->saveToFile($dirPath . '/final.png');
     }
-    protected function _calcNewDimensions($size)
-    {
-        $max = 400;
-        if ($size['w'] > $size.['h']) {
-            $size['newW'] = $max;
-            $size['newH'] = $this->_calcProporcao($size['w'], $max, $size['h']);
-        } else {
-            $size['newH'] = $max;
-            $size['newW'] = $this->_calcProporcao($size['h'], $max, $size['w']);
-        }
-        return $size;
-    }
-    protected function calcProporcao($maior, $novoValor, $menor){
-        $percent = ($novoValor*100) / $maior;
-        $novoMenor = ($menor*$percent) / 100;
-        return $novoMenor;
-    }
+    // protected function _calcNewDimensions($size)
+    // {
+    //     $max = 400;
+    //     if ($size['w'] > $size.['h']) {
+    //         $size['newW'] = $max;
+    //         $size['newH'] = $this->_calcProporcao($size['w'], $max, $size['h']);
+    //     } else {
+    //         $size['newH'] = $max;
+    //         $size['newW'] = $this->_calcProporcao($size['h'], $max, $size['w']);
+    //     }
+    //     return $size;
+    // }
+    // protected function calcProporcao($maior, $novoValor, $menor){
+    //     $percent = ($novoValor*100) / $maior;
+    //     $novoMenor = ($menor*$percent) / 100;
+    //     return $novoMenor;
+    // }
     /**
      * Default validation rules.
      *

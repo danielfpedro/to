@@ -19,7 +19,7 @@
         //var maiorLado = (width >= height) ? 'width' : 'height';
 
         $('#slider-width').slider({
-            min: 40,
+            min: 15,
             max: (max / 3),
             step: 1,
             value: ($('#ribbon-' + maiorLado).val() / 3),
@@ -80,6 +80,9 @@
                         $('.img-inside').css({top: 0 + 'px', left: 0 + 'px'});
                         $('.img-inside').css({width: (newW / 3) + 'px', height: (newH / 3) + 'px'});
 
+                        $('#ribbon-left').val(0);
+                        $('#ribbon-top').val(0);
+
                         $('#ribbon-width').val(newW);
                         $('#ribbon-height').val(newH);
 
@@ -93,33 +96,6 @@
 
                 reader.readAsDataURL(input.files[0]);
             }
-        }
-        if ($('#ribbon-img-path').val()) {
-            setInsideImg(webroot + '/' + $('#ribbon-img-path').val(), ($('#ribbon-width').val()), ($('#ribbon-height').val()), $('#ribbon-top').val(), $('#ribbon-left').val(), true);            
-        }
-        function setInsideImg(imgPath, w, h, top, left, flag){
-            // $('.img-inside').attr('src', imgPath);
-            // if (w > h) {
-            //     $('.img-inside').css('background-size', '100% auto');
-            //     $('.img-preview').css('background-size', '100% auto');
-
-            //     $('#ajustar-largura').show();
-            //     $('#ajustar-altura').hide();
-            // } else {
-            //     $('.img-inside').css('background-size', 'auto 100%');
-            //     $('.img-preview').css('background-size', 'auto 100%');
-
-            //     $('#ajustar-largura').hide();
-            //     $('#ajustar-altura').show();
-            // }
-            // $('.img-inside').css('background-image', 'url('+imgPath+')');
-            
-            // $('.img-inside').css({top: top + 'px', left: left + 'px'});
-            // if (flag) {
-            //     $('.img-inside').css({width: (w / 3) + 'px', height: (h / 3) + 'px'});
-            // } else {
-            //     $('.img-inside').css({width: w + 'px', height: h + 'px'});    
-            // }            
         }
         function resizeImg(size){
             max = 400;
@@ -135,7 +111,7 @@
         function calcProporcao(maior, novoValor, menor){
             percent = (novoValor*100) / maior;
             novoMenor = (menor*percent) / 100;
-            return novoMenor;
+            return Math.round(novoMenor);
         }
         function validateSize(width, height){
             var message = '';
@@ -155,8 +131,10 @@
         /**
          * Somente para edição
          */
-        var ribbonImgPath = $('#ribbon-img-path').val();
-        if (ribbonImgPath) {
+        var ribbonDir = $('#ribbon-dir').val();
+        if (ribbonDir) {
+            var imageName = $('#ribbon-image-name').val();
+
             var imageWidth = parseInt($('#ribbon-image-width').val());
             var imageHeight = parseInt($('#ribbon-image-height').val());
 
@@ -168,8 +146,8 @@
 
             var opacity = $('#ribbon-opacity').val();
 
-            $('.img-inside').attr('src', webroot + ribbonImgPath);
-            $('.img-inside').css({top: top + 'px', left: left + 'px'});
+            $('.img-inside').attr('src', webroot + 'files/campanhas/ribbon/' + ribbonDir + '/' + imageName);
+            $('.img-inside').css({top: (top / 3) + 'px', left: (left / 3) + 'px'});
             $('.img-inside').css({opacity: opacity});
             $('.img-inside').css({width: (width / 3) + 'px', height: (height / 3) + 'px'});
 
@@ -195,9 +173,9 @@
         $('.img-inside').draggable({
             containment: "parent",
             stop: function(event, ui) {
-                console.log(ui);
-                $('#ribbon-top').val(ui.position.top);
-                $('#ribbon-left').val(ui.position.left);
+                console.log(ui.position);
+                $('#ribbon-top').val(ui.position.top * 3);
+                $('#ribbon-left').val(ui.position.left * 3);
             }
         });
 
@@ -213,35 +191,8 @@
             $('#img-left').val(offset.left - 8);
         });
         
-        //$('.ui-resizable-handle').hide();
-
-        var insideImgOffset = {
-            top: $('#offset-top').val() + 'px',
-            left: $('#offset-left').val() + 'px',
-        };
-        
-        $('.img-inside').css(insideImgOffset);
-
-        // $('.img-container').hover(function(){
-        //     $('.ui-resizable-handle').fadeToggle();
-        // }, function(){
-        //     $('.ui-resizable-handle').fadeToggle();
-        // });
-
         $('#opacity-placeholder').change(function(){
             var value = $(this).val();
-        });
-
-        $('#ajustar-largura, #ajustar-altura').click(function(){
-            var $imgInside = $('.img-inside');
-
-            var w = $imgInside.width();
-            var h = $imgInside.height();
-
-            size = resizeImg({w: w, h: h});
-
-            $imgInside.css({width: (size.newW / 3), height: (size.newH / 3), left: 0, top: 0});
-            
         });
     });
 </script>
@@ -277,18 +228,14 @@
                     <div id="slider-opacity"></div>
                     width
                     <div id="slider-width"></div>
-                    height
-                    <div id="slider-height"></div>
-                    <div>
-                        <button type="button" id="ajustar-largura">Ajustar Largura</button>
-                        <button type="button" id="ajustar-altura">Ajustar Altura</button>
-                    </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <?= $this->Form->create($campanha, ['horizontal' => true, 'type' => 'file']) ?>
                         <?php
+                            echo $this->Form->input('ribbon_image_name');
+
                             echo $this->Form->input('ribbon_width');
                             echo $this->Form->input('ribbon_height');
 
@@ -297,7 +244,7 @@
 
                             echo $this->Form->input('webroot', ['value' => $this->request->webroot]);
                             echo $this->Form->input('facebook_id_placeholder', ['value' => $authUser['facebook_id']]);
-                            echo $this->Form->input('ribbon_img_path');
+                            echo $this->Form->input('ribbon_dir');
                             echo $this->Form->input('title');
                             echo $this->Form->input('text');
                             echo $this->Form->input('tags');
@@ -307,7 +254,6 @@
                             echo $this->Form->input('ribbon_top');
                             echo $this->Form->input('ribbon_left');
                             echo $this->Form->input('ribbon_opacity');
-
                         ?>
                         <?= $this->Form->button(__('Enviar')) ?>
                     <?= $this->Form->end() ?>  
