@@ -4,19 +4,21 @@
         var maiorLado;
         var max = 396;
 
+        var ribbonDir = $('#ribbon-dir').val();
+
+        var isEditing = (ribbonDir) ? true : false;
+
         $('#slider-opacity').slider({
             min: 0.1,
             max: 1,
             step: 0.1,
-            value: $('#ribbon-opacity').val(),
+            value: (isEditing) ? $('#ribbon-opacity').val() : 1,
             slide: function(event, ui){
                 console.log(ui.value);
                 $('#ribbon-opacity').val(ui.value);
                 $('.img-inside').css('opacity', ui.value);
             }
         });
-
-        //var maiorLado = (width >= height) ? 'width' : 'height';
 
         $('#slider-width').slider({
             min: 15,
@@ -97,42 +99,14 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
-        function resizeImg(size){
-            max = 400;
-            if (size.w > size.h) {
-                size.newW = max;
-                size.newH = calcProporcao(size.w, max, size.h);
-            } else {
-                size.newH = max;
-                size.newW = calcProporcao(size.h, max, size.w);
-            }
-            return size;
-        }
         function calcProporcao(maior, novoValor, menor){
             percent = (novoValor*100) / maior;
             novoMenor = (menor*percent) / 100;
             return Math.round(novoMenor);
         }
-        function validateSize(width, height){
-            var message = '';
-            var max = 400;
-            // if (width > max) {
-            //     message = 'A largura da imagem não pode ser maior que '+max+' ('+width+'px informado)';
-            // }
-            // if (height > max) {
-            //     message = 'A altura da imagem não pode ser maior que '+max+' ('+height+'px informado)';
-            // }
-            // if (message) {
-            //     alert(message);
-            //     return false;
-            // }
-            return true;
-        }
-        /**
-         * Somente para edição
-         */
-        var ribbonDir = $('#ribbon-dir').val();
-        if (ribbonDir) {
+
+        
+        if (isEditing) {
             var imageName = $('#ribbon-image-name').val();
 
             var imageWidth = parseInt($('#ribbon-image-width').val());
@@ -178,22 +152,6 @@
                 $('#ribbon-left').val(ui.position.left * 3);
             }
         });
-
-        $('#btn-show-info').click(function(){
-            var w = $('.img-inside').width();
-            var h = $('.img-inside').height();
-
-            var offset = $('.img-inside').offset();
-
-            $('#img-size').val(w + ' X ' + h);
-
-            $('#img-top').val(offset.top - 8);
-            $('#img-left').val(offset.left - 8);
-        });
-        
-        $('#opacity-placeholder').change(function(){
-            var value = $(this).val();
-        });
     });
 </script>
 <div class="container">
@@ -201,7 +159,7 @@
         <div class="col-md-8">
             <div class="row">
                 <div class="col-md-3">
-                    <div style="background-image: url(http://graph.facebook.com/<?= $authUser['facebook_id'] ?>/picture?type=square&width=140&height=140);background-size: cover; background-position: top center; width: 132px; height: 132px;">
+                    <div style="background-image: url(<?= $this->request->webroot . '/img/avatar.png' ?>);background-size: cover; background-position: top center; width: 132px; height: 132px;">
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -210,15 +168,8 @@
                     <button class="btn btn-primary btn-xs" id="load-img">Enviar</button>
                 </div>
                 <div class="col-md-3">
-                    <div class="img-container" style="background-image: url(http://graph.facebook.com/<?= $authUser['facebook_id'] ?>/picture?type=square&width=140&height=140); bakground-size: cover; width: 132px; height: 132px;">
+                    <div class="img-container" style="background-image: url(<?= $this->request->webroot . '/img/avatar.png' ?>); bakground-size: cover; width: 132px; height: 132px;">
 
-<!--                         <div class="img-inside">
-                            <div id="swgrip" class="ui-resizable-handle ui-resizable-sw"></div>
-                            <div id="segrip" class="ui-resizable-handle ui-resizable-se"></div>
-                            <div id="nwgrip" class="ui-resizable-handle ui-resizable-nw"></div>
-                            <div id="ngrip" class="ui-resizable-handle ui-resizable-n"></div>
-                            <div id="negrip" class="ui-resizable-handle ui-resizable-ne"></div>
-                        </div> -->
                         <img src="" class="img-inside" alt="">
                     </div>
                     

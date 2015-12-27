@@ -1,48 +1,10 @@
-<script>
-	$(function(){
-		$('.img-inside').draggable({
-			containment: "parent"
-		});
-		$('.img-inside').resizable({
-			containment: "parent",
-			aspectRatio: true,
-			handles: {
-				'sw': '#swgrip',
-				'se': '#segrip',
-				'nw': '#nwgrip',
-				'ne': '#negrip',
-				// 's': '#sgrip',
-			}
-		});
+<?php
+	$ribbonImage = $this->request->webroot . 'files/campanhas/ribbon/' . $campanha->ribbon_dir . '/' . $campanha->ribbon_image_name;
+	$ribbonWidth = ($campanha->ribbon_width / 3) . 'px';
+	$ribbonHeight = ($campanha->ribbon_height / 3) . 'px';
 
-		$('#btn-show-info').click(function(){
-			var w = $('.img-inside').width();
-			var h = $('.img-inside').height();
-
-			var offset = $('.img-inside').offset();
-
-			$('#img-size').val(w + ' X ' + h);
-
-			$('#img-top').val(offset.top - 8);
-			$('#img-left').val(offset.left - 8);
-		});
-		$('.ui-resizable-handle').hide();
-
-		var insideImgOffset = {
-			top: $('#offset-top').val() + 'px',
-			left: $('#offset-left').val() + 'px',
-		};
-		
-		$('.img-inside').css(insideImgOffset);
-
-		$('.img-container').hover(function(){
-			$('.ui-resizable-handle').fadeToggle();
-		}, function(){
-			$('.ui-resizable-handle').fadeToggle();
-		});
-	});
-</script>
-
+	$avatarImage = $this->request->webroot . '/img/avatar.png';
+?>
 <div class="container">
 	<div class="row">
 		<!-- MAIN -->
@@ -64,21 +26,13 @@
 				<div class="col-md-8">
 					<div class="row">
 						<div class="col-md-4">
-							<div class="img-container" style="background-image: url(http://graph.facebook.com/<?= $authUser['facebook_id'] ?>/picture?type=square&width=140&height=140)">
-
-								<?php $imgInside = $this->request->webroot . 'img/ribbon_test.png' ?>
-								<div class="img-inside" style="background-image: url(<?= $imgInside ?>)">
-					                <div id="swgrip" class="ui-resizable-handle ui-resizable-sw"></div>
-					                <div id="segrip" class="ui-resizable-handle ui-resizable-se"></div>
-					                <div id="nwgrip" class="ui-resizable-handle ui-resizable-nw"></div>
-					                <div id="negrip" class="ui-resizable-handle ui-resizable-ne"></div>
+							<div class="img-container" style="background-image: url(<?= $avatarImage ?>); width: 132px; height: 132px;">
+								<div
+									class="img-inside"
+									style="background-image: url(<?= $ribbonImage ?>); width: <?= $ribbonWidth ?>; height: <?= $ribbonHeight ?>; left: <?= $campanha->ribbon_left / 3 ?>px; top: <?= $campanha->ribbon_top / 3 ?>px">
 								</div>
 							</div>
-							<input type="text" id="offset-top" value="<?= h($campanha->ribbon_top) ?>">
-							<input type="text" id="offset-left" value="<?= h($campanha->ribbon_left) ?>">
 						</div>
-						<div class="col-md-4">+</div>
-						<div class="col-md-4">O</div>
 					</div>
 					<div class="row">
 						<div class="col-md-12">

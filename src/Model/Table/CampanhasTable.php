@@ -40,6 +40,7 @@ class CampanhasTable extends Table
             'foreignKey' => 'user_id',
             'joinType' => 'INNER'
         ]);
+        
         $this->belongsTo('Categorias', [
             'foreignKey' => 'categoria_id',
             'joinType' => 'INNER'

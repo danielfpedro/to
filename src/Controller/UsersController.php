@@ -54,7 +54,7 @@ class UsersController extends AppController
                 ]);
                 $helper = $fb->getRedirectLoginHelper();
                 $permissions = ['email'];
-                $loginUrl = $helper->getLoginUrl('http://localhost:777/to/users/login', $permissions);
+                $loginUrl = $helper->getLoginUrl('http://localhost/to/users/login', $permissions);
             }
         } else {
             $fb = new Facebook([
@@ -65,7 +65,7 @@ class UsersController extends AppController
             ]);
             $helper = $fb->getRedirectLoginHelper();
             $permissions = ['email'];
-            $loginUrl = $helper->getLoginUrl('http://localhost:777/to/users/login', $permissions);
+            $loginUrl = $helper->getLoginUrl('http://localhost/to/users/login', $permissions);
         }
         $this->set(compact('loginUrl'));
     }
