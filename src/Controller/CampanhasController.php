@@ -10,10 +10,6 @@ use App\Controller\AppController;
  */
 class CampanhasController extends AppController
 {
-    public function img()
-    {
-        
-    }
     /**
      * Index method
      *
@@ -54,6 +50,7 @@ class CampanhasController extends AppController
         $this->viewBuilder()->template('form');
 
         $campanha = $this->Campanhas->newEntity();
+
         if ($this->request->is('post')) {
             $campanha = $this->Campanhas->patchEntity($campanha, $this->request->data);
             $campanha->user_id = $this->Auth->user('id');
@@ -64,7 +61,9 @@ class CampanhasController extends AppController
                 $this->Flash->error(__('The campanha could not be saved. Please, try again.'));
             }
         }
+        
         $categorias = $this->Campanhas->Categorias->find('list');
+
         $this->set(compact('campanha', 'categorias'));
     }
 

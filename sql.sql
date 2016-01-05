@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50620
 File Encoding         : 65001
 
-Date: 2015-12-04 16:06:58
+Date: 2015-12-22 17:58:15
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -40,6 +40,7 @@ CREATE TABLE `campanhas` (
 `ribbon_opacity`  decimal(2,1) NOT NULL DEFAULT 1.0 ,
 `ribbon_image_width`  decimal(10,3) NOT NULL ,
 `ribbon_image_height`  decimal(10,3) NULL DEFAULT NULL ,
+`ribbon_image_name`  varchar(200) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL ,
 PRIMARY KEY (`id`)
 )
 ENGINE=InnoDB
@@ -52,7 +53,7 @@ AUTO_INCREMENT=5
 -- Records of campanhas
 -- ----------------------------
 BEGIN;
-INSERT INTO `campanhas` VALUES ('1', '4', 'Botafogo', 'Botafogo é um bom time', null, null, '2015-11-27 19:59:07', '2015-11-27 19:59:07', 'botafogo', '3', 'botafogo;glorioso;futebol', '10', '10', '0', '0', '', '', '1.0', '0.000', null), ('3', '4', 'Delata Delcídio', 'bla bla bla', null, null, '2015-12-01 11:58:53', '2015-12-01 11:58:53', 'delata-delcidio', '1', 'delcidio; fora pt; lava jato', '0', '0', '0', '0', '', '', '1.0', '0.000', null), ('4', '4', 'asd', 'das', null, null, '2015-12-01 17:52:17', '2015-12-04 18:02:15', 'asd', '0', 'dsa', '62', '46', '132', '132', '1443640977katethompson.jpg', '6567b6f3-3f4b-41c4-98de-679f816a94ac', '1.0', '256.000', '256.000');
+INSERT INTO `campanhas` VALUES ('1', '4', 'Botafogo', 'Botafogo é um bom time', null, null, '2015-11-27 19:59:07', '2015-11-27 19:59:07', 'botafogo', '3', 'botafogo;glorioso;futebol', '10', '10', '0', '0', '', '', '1.0', '0.000', null, null), ('3', '4', 'Delata Delcídio', 'bla bla bla', null, null, '2015-12-01 11:58:53', '2015-12-01 11:58:53', 'delata-delcidio', '1', 'delcidio; fora pt; lava jato', '0', '0', '0', '0', '', '', '1.0', '0.000', null, null), ('4', '4', 'asd', 'das', null, null, '2015-12-01 17:52:17', '2015-12-22 19:41:42', 'asd', '0', 'dsa', '258', '282', '102', '120', 'Botafogo_de_Futebol_e_Regatas_logo.png', '6567b6f3-3f4b-41c4-98de-679f816a94ac', '1.0', '258.000', '300.000', 'ea09242d4ca38bf7f34f80317a187337.png');
 COMMIT;
 
 -- ----------------------------

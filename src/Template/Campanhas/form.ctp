@@ -4,11 +4,17 @@
         var maiorLado;
         var max = 396;
 
+        var ribbonDir = $('#ribbon-dir').val();
+
+        var editMode = (ribbonDir) ? false : true;
+
+        var opacityValue = (editMode) ? $('#ribbon-opacity').val() : 1;
+
         $('#slider-opacity').slider({
             min: 0.1,
             max: 1,
             step: 0.1,
-            value: $('#ribbon-opacity').val(),
+            value: opacityValue,
             slide: function(event, ui){
                 console.log(ui.value);
                 $('#ribbon-opacity').val(ui.value);
@@ -131,8 +137,7 @@
         /**
          * Somente para edição
          */
-        var ribbonDir = $('#ribbon-dir').val();
-        if (ribbonDir) {
+        if (editMode) {
             var imageName = $('#ribbon-image-name').val();
 
             var imageWidth = parseInt($('#ribbon-image-width').val());
