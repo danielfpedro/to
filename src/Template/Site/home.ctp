@@ -1,20 +1,6 @@
 <!-- Topo -->
 <?= $this->element('Site/topo') ?>
 
-<!-- Chamada -->
-<!-- <div class="home-chamada-container">
-	<div class="container">
-		<div class="home-chamada-interno">
-			<div class="row text-center">
-				<div class="col-md-12">
-					<p>Aqui você cria a sua campanha</p>
-					<?= $this->Html->link('Criar Campanha', []) ?>
-				</div>
-			</div>
-		</div>
-	</div>
-</div> -->
-
 <div class="container">
 	<div class="row">
 		<!-- MAIN -->

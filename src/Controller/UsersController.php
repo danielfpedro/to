@@ -16,19 +16,6 @@ class UsersController extends AppController
     {
         parent::beforeFilter($event);
         $this->Auth->allow(['login', 'logout']);
-    } 
-    public function campanhas()
-    {
-        $this->loadModel('Campanhas');
-        $this->paginate = [
-            'conditions' => [
-                'user_id' => $this->Auth->user('id')
-            ],
-            'contain' => ['Users', 'Categorias']
-        ];
-        $campanhas = $this->paginate($this->Campanhas);
-
-        $this->set(compact('campanhas'));
     }
     public function logout()
     {

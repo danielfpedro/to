@@ -1,7 +1,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-8">
-			<?= $this->element('Site/campanha_default', ['campanhas' => $campanhas]) ?>
+			<?= $this->element('Site/campanha_default', ['campanhas' => $campanhas, 'showEditButton' => true]) ?>
 		</div>
 		<div class="col-md-4">
 			<?= $this->cell('sidemenu') ?>

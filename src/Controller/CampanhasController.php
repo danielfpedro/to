@@ -56,7 +56,7 @@ class CampanhasController extends AppController
             $campanha->user_id = $this->Auth->user('id');
             if ($this->Campanhas->save($campanha)) {
                 $this->Flash->success(__('The campanha has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['controller' => 'Site', 'action' => 'campanhasByUser', $this->Auth->user('id')]);
             } else {
                 $this->Flash->error(__('The campanha could not be saved. Please, try again.'));
             }
@@ -85,13 +85,14 @@ class CampanhasController extends AppController
             $campanha = $this->Campanhas->patchEntity($campanha, $this->request->data);
             if ($this->Campanhas->save($campanha)) {
                 $this->Flash->success(__('The campanha has been saved.'));
-                //return $this->redirect(['action' => 'index']);
+                return $this->redirect(['controller' => 'Site', 'action' => 'campanhasByUser', $this->Auth->user('id')]);
             } else {
                 $this->Flash->error(__('The campanha could not be saved. Please, try again.'));
             }
         }
         $users = $this->Campanhas->Users->find('list', ['limit' => 200]);
-        $this->set(compact('campanha', 'users'));
+        $categorias = $this->Campanhas->Categorias->find('list', ['limit' => 200]);
+        $this->set(compact('campanha', 'users', 'categorias'));
     }
 
     /**
@@ -111,5 +112,15 @@ class CampanhasController extends AppController
             $this->Flash->error(__('The campanha could not be deleted. Please, try again.'));
         }
         return $this->redirect(['action' => 'index']);
+    }
+    public function engineModal($id = null)
+    {
+        $this->viewBuilder()->layout('ajax');
+
+        $campanha = $this->Campanhas->get($id, [
+            'contain' => []
+        ]);
+
+        $this->set(compact('campanha'));
     }
 }

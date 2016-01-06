@@ -16,6 +16,34 @@ class SiteController extends AppController
     {
 
     }
+    public function campanhasByUser($userId = null)
+    {
+        $q = $this->request->query('q');
+
+        $conditions[] = [
+            'user_id' => $userId
+        ];
+
+        if ($q) {
+            $q = str_replace(' ', '%', $q);
+            $conditions[] = [
+                'or' => [
+                    'title LIKE' => "%{$q}%",
+                    'tags LIKE' => "%{$q}%",
+                ]
+            ];
+        }
+
+
+        $this->loadModel('Campanhas');
+        $this->paginate = [
+            'conditions' => $conditions,
+            'contain' => ['Users', 'Categorias']
+        ];
+        $campanhas = $this->paginate($this->Campanhas);
+
+        $this->set(compact('campanhas'));
+    }
     public function categoria($slug = null)
     {
         if (!$slug) {
@@ -57,7 +85,10 @@ class SiteController extends AppController
 
         $this->paginate = [
             'conditions' => [
-                'tags LIKE' => '%' . $qQuery . '%'
+                'or' => [
+                    'title LIKE' => '%' . $qQuery . '%',
+                    'tags LIKE' => '%' . $qQuery . '%'
+                ]
             ],
             'contain' => ['Users', 'Categorias'],
         ];

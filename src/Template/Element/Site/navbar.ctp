@@ -38,8 +38,9 @@
 						<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
 							<li>
 								<?= $this->Html->link('Minhas Campanhas', [
-									'controller' => 'Users',
-									'action' => 'campanhas'
+									'controller' => 'Site',
+									'action' => 'campanhasByUser',
+									$authUser['id']
 								]) ?>
 							</li>
 							<li class="divider"></li>

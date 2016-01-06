@@ -6,23 +6,21 @@
 
         var ribbonDir = $('#ribbon-dir').val();
 
-        var editMode = (ribbonDir) ? false : true;
-
-        var opacityValue = (editMode) ? $('#ribbon-opacity').val() : 1;
+        var isEditing = (ribbonDir) ? true : false;
 
         $('#slider-opacity').slider({
             min: 0.1,
             max: 1,
             step: 0.1,
-            value: opacityValue,
+
+            value: (isEditing) ? $('#ribbon-opacity').val() : 1,
+
             slide: function(event, ui){
                 console.log(ui.value);
                 $('#ribbon-opacity').val(ui.value);
                 $('.img-inside').css('opacity', ui.value);
             }
         });
-
-        //var maiorLado = (width >= height) ? 'width' : 'height';
 
         $('#slider-width').slider({
             min: 15,
@@ -103,41 +101,14 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
-        function resizeImg(size){
-            max = 400;
-            if (size.w > size.h) {
-                size.newW = max;
-                size.newH = calcProporcao(size.w, max, size.h);
-            } else {
-                size.newH = max;
-                size.newW = calcProporcao(size.h, max, size.w);
-            }
-            return size;
-        }
         function calcProporcao(maior, novoValor, menor){
             percent = (novoValor*100) / maior;
             novoMenor = (menor*percent) / 100;
             return Math.round(novoMenor);
         }
-        function validateSize(width, height){
-            var message = '';
-            var max = 400;
-            // if (width > max) {
-            //     message = 'A largura da imagem não pode ser maior que '+max+' ('+width+'px informado)';
-            // }
-            // if (height > max) {
-            //     message = 'A altura da imagem não pode ser maior que '+max+' ('+height+'px informado)';
-            // }
-            // if (message) {
-            //     alert(message);
-            //     return false;
-            // }
-            return true;
-        }
-        /**
-         * Somente para edição
-         */
-        if (editMode) {
+        
+        if (isEditing) {
+            console.log('Está editando');
             var imageName = $('#ribbon-image-name').val();
 
             var imageWidth = parseInt($('#ribbon-image-width').val());
@@ -183,22 +154,6 @@
                 $('#ribbon-left').val(ui.position.left * 3);
             }
         });
-
-        $('#btn-show-info').click(function(){
-            var w = $('.img-inside').width();
-            var h = $('.img-inside').height();
-
-            var offset = $('.img-inside').offset();
-
-            $('#img-size').val(w + ' X ' + h);
-
-            $('#img-top').val(offset.top - 8);
-            $('#img-left').val(offset.left - 8);
-        });
-        
-        $('#opacity-placeholder').change(function(){
-            var value = $(this).val();
-        });
     });
 </script>
 <div class="container">
@@ -206,7 +161,7 @@
         <div class="col-md-8">
             <div class="row">
                 <div class="col-md-3">
-                    <div style="background-image: url(http://graph.facebook.com/<?= $authUser['facebook_id'] ?>/picture?type=square&width=140&height=140);background-size: cover; background-position: top center; width: 132px; height: 132px;">
+                    <div style="background-image: url(<?= $this->request->webroot . '/img/avatar.png' ?>);background-size: cover; background-position: top center; width: 132px; height: 132px;">
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -215,15 +170,8 @@
                     <button class="btn btn-primary btn-xs" id="load-img">Enviar</button>
                 </div>
                 <div class="col-md-3">
-                    <div class="img-container" style="background-image: url(http://graph.facebook.com/<?= $authUser['facebook_id'] ?>/picture?type=square&width=140&height=140); bakground-size: cover; width: 132px; height: 132px;">
+                    <div class="img-container" style="background-image: url(<?= $this->request->webroot . '/img/avatar.png' ?>); bakground-size: cover; width: 132px; height: 132px;">
 
-<!--                         <div class="img-inside">
-                            <div id="swgrip" class="ui-resizable-handle ui-resizable-sw"></div>
-                            <div id="segrip" class="ui-resizable-handle ui-resizable-se"></div>
-                            <div id="nwgrip" class="ui-resizable-handle ui-resizable-nw"></div>
-                            <div id="ngrip" class="ui-resizable-handle ui-resizable-n"></div>
-                            <div id="negrip" class="ui-resizable-handle ui-resizable-ne"></div>
-                        </div> -->
                         <img src="" class="img-inside" alt="">
                     </div>
                     
@@ -239,27 +187,31 @@
                 <div class="col-md-12">
                     <?= $this->Form->create($campanha, ['horizontal' => true, 'type' => 'file']) ?>
                         <?php
-                            echo $this->Form->input('ribbon_image_name');
-
-                            echo $this->Form->input('ribbon_width');
-                            echo $this->Form->input('ribbon_height');
-
-                            echo $this->Form->input('ribbon_image_width');
-                            echo $this->Form->input('ribbon_image_height');
-
-                            echo $this->Form->input('webroot', ['value' => $this->request->webroot]);
-                            echo $this->Form->input('facebook_id_placeholder', ['value' => $authUser['facebook_id']]);
-                            echo $this->Form->input('ribbon_dir');
                             echo $this->Form->input('title');
                             echo $this->Form->input('text');
                             echo $this->Form->input('tags');
                             echo $this->Form->input('categoria_id', ['empty' => __('Selecione a categoria')]);
-                            
-                            echo $this->Form->input('ribbon', ['type' => 'file']);
-                            echo $this->Form->input('ribbon_top');
-                            echo $this->Form->input('ribbon_left');
-                            echo $this->Form->input('ribbon_opacity');
                         ?>
+                        <div style="display: none;">
+                            <?php
+                                echo $this->Form->input('ribbon_image_name');
+
+                                echo $this->Form->input('ribbon_width');
+                                echo $this->Form->input('ribbon_height');
+
+                                echo $this->Form->input('ribbon_image_width');
+                                echo $this->Form->input('ribbon_image_height');
+
+                                echo $this->Form->input('webroot', ['value' => $this->request->webroot]);
+                                echo $this->Form->input('facebook_id_placeholder', ['value' => $authUser['facebook_id']]);
+                                echo $this->Form->input('ribbon_dir');
+                                
+                                echo $this->Form->input('ribbon', ['type' => 'file']);
+                                echo $this->Form->input('ribbon_top');
+                                echo $this->Form->input('ribbon_left');
+                                echo $this->Form->input('ribbon_opacity');
+                            ?>
+                        </div>
                         <?= $this->Form->button(__('Enviar')) ?>
                     <?= $this->Form->end() ?>  
                 </div>
